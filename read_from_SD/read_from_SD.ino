@@ -2,10 +2,11 @@
 #include <SD.h>
 
 const int chipSelect = 10;
+const int output_pin = 8;
 File dataFile;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.print("Initializingard...");
     
   if (!SD.begin(chipSelect)) {
@@ -13,7 +14,7 @@ void setup() {
     return;
   }
 
-  pinMode(8, OUTPUT);
+  pinMode(output_pin, OUTPUT);
 
   Serial.println("card initialized.");
   dataFile = SD.open("datalog.dat");
@@ -24,18 +25,20 @@ void loop() {
 
   int myData_read;
   
-   for(int i = 0; i < 20; i++){
+  for(int i = 0; i < 26; i++){
     myData_read = dataFile.read();
-   // Serial.print(myData_read);
     for(int i=0; i < 8; i++){
       if((myData_read & (1<<i)) >> i){
-        digitalWrite(8, HIGH);
-        delay(10);
+        digitalWrite(output_pin, HIGH);
+        delayMicroseconds(1);
       }
       else {
-        digitalWrite(8, LOW);
-        delay(10);
+        digitalWrite(output_pin, LOW);
+        delayMicroseconds(1);
       }
     }
   }
+
+  //digitalWrite(output_pin, LOW);
+  //delay(5000000);
 }
